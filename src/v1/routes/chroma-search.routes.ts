@@ -1,5 +1,4 @@
 /**
- * @fileoverview ChromaDB Search Routes
  * 
  * This file defines the API routes for ChromaDB operations.
  * It provides endpoints for:
@@ -8,9 +7,6 @@
  * - Collection info: GET /collection-info
  * - Delete collection: DELETE /delete-collection
  * 
- * @author Your Name
- * @version 1.0.0
- * @since 2024
  */
 
 import { Router } from "express";

@@ -1,5 +1,4 @@
 /**
- * @fileoverview ChromaDB Search Service
  * 
  * This service handles semantic search operations using LangChain with ChromaDB.
  * It provides functionality for:
@@ -9,10 +8,6 @@
  * - Semantic search queries
  * 
  * Based on: https://js.langchain.com/docs/tutorials/retrievers
- * 
- * @author Your Name
- * @version 1.0.0
- * @since 2024
  */
 
 import { ChatOpenAI } from "@langchain/openai";
@@ -21,8 +16,6 @@ import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { config } from "../../config/index.js";
 import { AppError } from "../../common/utils/AppError.js";
-import { Document } from "@langchain/core/documents";
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { SemanticSearchService } from "./semantic-search.service.js";
 
 /**
