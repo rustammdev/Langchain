@@ -81,4 +81,38 @@ export class SemanticSearchController {
             });
         }
     }
+
+    /**
+     * Load PDF and create vector store
+     */
+    async loadPdfAndCreateVectorStore(req: Request, res: Response) {
+        try {
+            const filePath = "./src/v1/utils/ROLE_BASED_ACCESS_SYSTEMv2.pdf";
+            const response = await this.semanticSearchService.loadPdfAndCreateVectorStore(filePath);
+            return res.json(response);
+        } catch (error: any) {
+            return res.status(error.statusCode || 500).json({
+                error: error.message
+            });
+        }
+    }
+
+    /**
+     * Search in PDF content
+     */
+    async searchInPdf(req: Request, res: Response) {
+        try {
+            const { query, k } = {
+                "query": "How many modules role based access system has?",
+                "k": 3
+            }
+
+            const response = await this.semanticSearchService.searchInPdf(query, k);
+            return res.json(response);
+        } catch (error: any) {
+            return res.status(error.statusCode || 500).json({
+                error: error.message
+            });
+        }
+    }
 }

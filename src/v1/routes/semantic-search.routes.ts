@@ -27,4 +27,8 @@ router.post("/create-vector-store", semanticSearchController.createVectorStore.b
 // Search
 router.post("/search", semanticSearchController.similaritySearch.bind(semanticSearchController));
 
+// PDF operations
+router.post("/load-pdf", semanticSearchController.loadPdfAndCreateVectorStore.bind(semanticSearchController));
+router.post("/search-pdf", semanticSearchController.searchInPdf.bind(semanticSearchController));
+
 export default router;

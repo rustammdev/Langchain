@@ -3,6 +3,7 @@ import { notFound } from "./common/middlewares/notFound.js";
 import { errorHandler } from "./common/middlewares/errorHandler.js";
 import langchainRouter from "./v1/routes/langchain.routes.js";
 import semanticSearchRouter from "./v1/routes/semantic-search.routes.js";
+import chromaSearchRouter from "./v1/routes/chroma-search.routes.js";
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/ai", langchainRouter);
-app.use("/ai/semantic-search", semanticSearchRouter)
+app.use("/ai/semantic-search", semanticSearchRouter);
+app.use("/ai/chroma-search", chromaSearchRouter);
 
 // 404 middleware — har doim route’lardan keyin
 app.use(notFound);

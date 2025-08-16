@@ -6,6 +6,9 @@
  * - Text embedding and vector storage
  * - Semantic search queries
  * - Retrieval operations
+ * - PDF loading and vector store creation
+ * - PDF content search 
+ * - ```docker run -d --name chromadb -p 8000:8000 chromadb/chroma:latest```
  *
  * Based on: https://js.langchain.com/docs/tutorials/retrievers
  *
@@ -14,6 +17,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { config } from "../../config/index.js";
 import { AppError } from "../../common/utils/AppError.js";
 import { Document } from "@langchain/core/documents";
@@ -78,6 +82,7 @@ export class SemanticSearchService {
                 length: docs.length,
                 metadata: docs[0]?.metadata,
                 message: "Document loaded successfully",
+                data: docs
             };
         } catch (error: any) {
             console.debug(error?.message);
@@ -131,7 +136,8 @@ export class SemanticSearchService {
             const documents = this.sampleDocuments();
             this.vectorStore = await MemoryVectorStore.fromDocuments(
                 documents,
-                this.embeddings
+                this.embeddings // ← bu yerda siz konstruktorda yaratgan embeddings obyektini berayapsiz
+
             );
 
             return {
@@ -201,6 +207,67 @@ export class SemanticSearchService {
             };
         } catch (error: any) {
             throw new AppError(`Vector similarity search failed: ${error?.message}`, 500);
+        }
+    }
+
+    /**
+     * Load PDF and create vector store for searching
+     * PDF yuklash va undan qidirish uchun vector store yaratish
+     */
+    async loadPdfAndCreateVectorStore(filePath: string) {
+        try {
+            // 1. PDF'ni yuklash
+            const loader = new PDFLoader(filePath);
+            const { data } = await this.loadDocument();
+
+            // 2. Hujjatlarni chunk'larga bo'lish (katta matnlarni kichik qismlarga)
+            const textSplitter = new RecursiveCharacterTextSplitter({
+                chunkSize: 1000,  // Har bir chunk'ning o'lchami
+                chunkOverlap: 200, // Chunk'lar orasidagi overlap
+            });
+            const splitDocs = await textSplitter.splitDocuments(data);
+
+            // 3. Vector store yaratish
+            this.vectorStore = await MemoryVectorStore.fromDocuments(
+                splitDocs,
+                this.embeddings
+            );
+
+            return {
+                message: "PDF loaded and vector store created successfully",
+                originalPages: data.length,
+                chunks: splitDocs.length,
+                filePath: filePath
+            };
+        } catch (error: any) {
+            console.debug(error?.message);
+            throw new AppError(`Failed to load PDF and create vector store: ${error?.message}`, 500);
+        }
+    }
+
+    /**
+     * Search in PDF content
+     * PDF ichidan ma'lumot qidirish
+     */
+    async searchInPdf(query: string, k: number = 3) {
+        try {
+            if (!this.vectorStore) {
+                throw new AppError("PDF not loaded. Please load PDF first using loadPdfAndCreateVectorStore.", 400);
+            }
+
+            const results = await this.vectorStore.similaritySearchWithScore(query, k);
+
+            return {
+                query,
+                results: results.map(([doc, score]) => ({
+                    content: doc.pageContent,
+                    metadata: doc.metadata,
+                    similarityScore: score,
+                    pageNumber: doc.metadata?.loc?.pageNumber || 'Unknown'
+                }))
+            };
+        } catch (error: any) {
+            throw new AppError(`PDF search failed: ${error?.message}`, 500);
         }
     }
 }
