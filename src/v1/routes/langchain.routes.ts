@@ -1,3 +1,11 @@
+/**
+ * 
+ * This file defines the API routes for LangChain operations.
+ * It provides endpoints for:
+ * - Simple LLM chat: GET /simple-llm-chat
+ * 
+ */
+
 import { Router } from "express";
 import { LangChainController } from "../controllers/langchain.controller.js";
 
