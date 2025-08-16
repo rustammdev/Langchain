@@ -1,9 +1,9 @@
 /**
- * 
+ *
  * This file defines the API routes for LangChain operations.
  * It provides endpoints for:
  * - Simple LLM chat: GET /simple-llm-chat
- * 
+ * - Semantic search: GET /semantic-search
  */
 
 import { Router } from "express";
@@ -16,5 +16,6 @@ router.get(
   "/simple-llm-chat",
   langChainController.simpleLlmChat.bind(langChainController)
 );
+
 
 export default router;

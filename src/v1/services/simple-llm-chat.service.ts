@@ -1,12 +1,12 @@
 /**
  * @fileoverview LangChain Service
- * 
+ *
  * This service handles interactions with OpenAI's language models using LangChain.
  * It provides functionality for:
  * - Simple LLM chat interactions
  * - Prompt template management
  * - Message formatting for different use cases
- * 
+ *
  */
 
 import { ChatOpenAI } from "@langchain/openai";
@@ -47,7 +47,8 @@ export class LangChainService {
       );
       const response = await this.model.invoke(promptValue);
 
-      return response;
+      return response.content;
+      // response only "Ciao!"
     } catch (error: any) {
       console.debug(error?.message);
       throw new AppError(error?.message, 500);
