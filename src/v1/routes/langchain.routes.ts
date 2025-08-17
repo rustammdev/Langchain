@@ -17,5 +17,10 @@ router.get(
   langChainController.simpleLlmChat.bind(langChainController)
 );
 
+router.post("/chat", langChainController.toolCalling.bind(langChainController));
+router.post(
+  "/chat/advanced",
+  langChainController.advancedToolCall.bind(langChainController)
+);
 
 export default router;
