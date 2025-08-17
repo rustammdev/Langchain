@@ -23,8 +23,13 @@ function requireEnv(name: string): string {
 export const config = {
   app: {
     port: parseInt(requireEnv("PORT"), 10),
+    redis_url: requireEnv("REDIS_URL"),
   },
   api_keys: {
     open_ai: requireEnv("OPENAI_API_KEY"),
+  },
+  agent: {
+    chat_history_ttl: requireEnv("CHAT_HISTORY_TTL"),
+    model: parseInt(requireEnv("MODEL"), 10),
   },
 };
