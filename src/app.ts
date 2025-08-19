@@ -10,6 +10,7 @@ import { AgentService } from "./agents/chat-with-memory/services/agent.service.j
 import ChatController from "./agents/chat-with-memory/controllers/chat.controller.js";
 import { ChatService } from "./agents/chat-with-memory/services/chat.service.js";
 import { createChatRouter } from "./agents/chat-with-memory/routes/chat-with-memory.route.js";
+import topics from './agents/content-creator/routes/topics.route.js';
 
 export function createApp() {
     const app = express();
@@ -37,7 +38,7 @@ export function createApp() {
     app.use("/ai/chroma-search", chromaSearchRouter);
     app.use("/ai/text-classification", textClassificationRouter);
     app.use("/ai/chat-with-memory", createChatRouter(chatController));
-
+    app.use("/ai/topics", topics);
     // 404 middleware — har doim route'lardan keyin
     app.use(notFound);
 

@@ -9,6 +9,7 @@
 
 import { Tool, tool } from "@langchain/core/tools";
 import { z } from "zod";
+import { ChromaSearchService } from "./chroma-search.service.js";
 
 /**
  * Service class for handling tools operations
@@ -29,11 +30,35 @@ export const multiplyTool = tool(
     }
 );
 
+/**
+ * Chroma search tool
+ */
+export const chromaSearchTool = tool(
+    async ({ query, k }: { query: string, k: number }) => {
+        console.log('IShlamoqdaman');
+        console.log(query, k);
+
+        const chromaSearchService = new ChromaSearchService();
+        const response = await chromaSearchService.searchInChromaDB(query, k);
+        console.log(response);
+
+        return response;
+    },
+    {
+        name: "chroma_search",
+        description: "Search in ChromaDB in loaded pdf documents with semantic search algorithm",
+        schema: z.object({
+            query: z.string(),
+            k: z.number(),
+        }),
+    }
+);
+
 
 // Tool with Async Function (Async funksiya bilan)
 export const fetchDataTool = tool(async ({ url }: { url: string }) => {
     const response = await fetch(url);
-    console.log('IShlamoqdaman');
+    console.log('IShlamoqdama');
 
 
     // Check content type to determine how to handle the response
