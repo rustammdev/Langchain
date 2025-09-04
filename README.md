@@ -1,74 +1,75 @@
 # 🤖 LangChain Agent API
 
-Bu loyiha LangChain va OpenAI'dan foydalanib yaratilgan AI Agent API hisoblanadi. Agent turli tool'lar bilan ishlash imkoniyatiga ega va foydalanuvchilar bilan chat tarixini saqlaydi.
+This project is an AI Agent API built using LangChain and OpenAI.  
+The agent can work with various tools and keeps chat history with users.
 
-## ✨ Xususiyatlar
+## ✨ Features
 
-- 🧠 **OpenAI GPT modellari** bilan ishlash
-- 🔧 **Tool'lar tizimi** - turli vazifalarni bajarish uchun
-- 💾 **Redis** orqali chat tarixini saqlash
-- 🌐 **RESTful API** - oson integratsiya uchun
-- 🏗️ **Clean Architecture** - tushunarli va kengaytiriladigan kod
-- 📊 **Token usage tracking** - xarajatlarni kuzatish
+- 🧠 Works with **OpenAI GPT models**
+- 🔧 **Tool system** – perform different tasks
+- 💾 Stores chat history via **Redis**
+- 🌐 **RESTful API** for easy integration
+- 🏗️ **Clean Architecture** – clear and extensible code
+- 📊 **Token usage tracking** – monitor costs
 
-## 🛠️ Mavjud Tool'lar
+## 🛠️ Available Tools
 
-1. **⏰ Vaqt Tool'i** - Joriy vaqtni olish
-2. **🔍 ChromaDB Qidiruv** - PDF hujjatlarida semantic qidiruv
-3. **🌐 DuckDuckGo Qidiruv** - Internet qidiruvi
-4. **📚 Wikipedia Qidiruv** - Wikipedia'da qidiruv
-5. **📡 Web Ma'lumot Olish** - URL'lardan ma'lumot olish
-6. **🧮 Kalkulyator** - Matematik amallar
+1. **⏰ Time Tool** – get the current time  
+2. **🔍 ChromaDB Search** – semantic search in PDF documents  
+3. **🌐 DuckDuckGo Search** – internet search  
+4. **📚 Wikipedia Search** – search on Wikipedia  
+5. **📡 Web Scraper** – fetch data from URLs  
+6. **🧮 Calculator** – perform mathematical operations  
 
-## 🚀 O'rnatish va Ishga Tushirish
+## 🚀 Installation & Running
 
-### Talablar
+### Requirements
 
 - Node.js 18+
 - Redis server
 - OpenAI API key
 
-### 1. Loyihani klonlash
+### 1. Clone the repository
 
 ```bash
 git clone <repository-url>
 cd langchain-agent-api
 ```
 
-### 2. Bog'liqliklarni o'rnatish
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Environment variables sozlash
+### 3. Configure environment variables
 
-`.env` faylini yarating va quyidagi ma'lumotlarni kiriting:
+Create a `.env` file and add the following:
 
 ```env
-# Asosiy sozlamalar
+# Basic settings
 PORT=3000
 NODE_ENV=development
 
-# API kalitlari
+# API keys
 OPENAI_API_KEY="your-openai-api-key"
 
 # Redis
 REDIS_URL=redis://localhost:6379
 
-# Agent sozlamalari
+# Agent settings
 CHAT_HISTORY_TTL=604800
 MODEL=gpt-4o-mini-2024-07-18
 TEMPERATURE=0.7
 ```
 
-### 4. Redis'ni ishga tushirish
+### 4. Start Redis
 
 ```bash
-# Docker orqali
+# With Docker
 docker run -d -p 6379:6379 redis:alpine
 
-# Yoki local Redis
+# Or locally
 redis-server
 ```
 
@@ -84,7 +85,7 @@ npm run build
 # Start production server
 npm start
 
-# Or start with production environment
+# Or with production environment
 npm run start:prod
 ```
 
@@ -101,42 +102,42 @@ docker run -p 3000:3000 --env-file .env langchain-agent-api
 docker-compose up -d
 ```
 
-## 📋 API Endpoint'lari
+## 📋 API Endpoints
 
-### Chat Endpoint'lari
+### Chat Endpoints
 
-#### Oddiy Chat
+#### Simple Chat
 ```http
 POST /ai/chat-with-memory/chat
 Content-Type: application/json
 
 {
   "userId": "user123",
-  "input": "Salom, qanday yordam bera olaman?"
+  "input": "Hello, how can I help you?"
 }
 ```
 
-#### Agent bilan Chat (Tool'lar bilan)
+#### Chat with Agent (with Tools)
 ```http
 POST /ai/chat-with-memory/agent
 Content-Type: application/json
 
 {
   "userId": "user123",
-  "input": "Bugungi ob-havo haqida ma'lumot ber",
+  "input": "Tell me today’s weather",
   "agentType": "openai_tools",
   "enabledTools": ["duckduckgo_search", "get_current_time"]
 }
 ```
 
-### Tool'larni Boshqarish
+### Tool Management
 
-#### Tool'lar ro'yxati
+#### List all tools
 ```http
 GET /ai/chat-with-memory/tools
 ```
 
-#### Tool'ni yoqish/o'chirish
+#### Enable/Disable a tool
 ```http
 PUT /ai/chat-with-memory/tools/duckduckgo_search
 Content-Type: application/json
@@ -146,45 +147,45 @@ Content-Type: application/json
 }
 ```
 
-### Tarixni Boshqarish
+### History Management
 
-#### Foydalanuvchi tarixini tozalash
+#### Clear user history
 ```http
 DELETE /ai/chat-with-memory/history/user123
 ```
 
-## 🏗️ Loyiha Strukturasi
+## 🏗️ Project Structure
 
 ```
 src/
-├── agents/                     # Agent va tool'lar
-│   ├── tools/                  # Tool'lar tizimi
-│   │   ├── base/              # Asosiy interfeys'lar
-│   │   ├── implementations/   # Tool implementatsiyalari
-│   │   └── tool-registry.ts   # Tool'larni boshqarish
-│   └── chat-with-memory/      # Chat agent
-│       ├── controllers/       # HTTP controller'lar
-│       ├── services/          # Business logic
-│       ├── routes/           # API route'lar
-│       ├── dto/              # Data transfer objects
-│       └── storage/          # Ma'lumot saqlash
-├── common/                    # Umumiy utility'lar
-├── config/                    # Konfiguratsiya
-├── v1/                       # API versiyasi
-├── app.ts                    # Express ilovasi
-├── server.ts                 # Server kirish nuqtasi
-└── index.ts                  # Asosiy fayl
+├── agents/                     # Agents and tools
+│   ├── tools/                  # Tool system
+│   │   ├── base/               # Core interfaces
+│   │   ├── implementations/    # Tool implementations
+│   │   └── tool-registry.ts    # Tool registry
+│   └── chat-with-memory/       # Chat agent
+│       ├── controllers/        # HTTP controllers
+│       ├── services/           # Business logic
+│       ├── routes/             # API routes
+│       ├── dto/                # Data transfer objects
+│       └── storage/            # Data storage
+├── common/                     # Common utilities
+├── config/                     # Configuration
+├── v1/                         # API version
+├── app.ts                      # Express application
+├── server.ts                   # Server entry point
+└── index.ts                    # Main file
 ```
 
-## 🔧 Tool Yaratish
+## 🔧 Creating a Tool
 
-Yangi tool yaratish uchun:
+To create a new tool:
 
-1. `src/agents/tools/implementations/` papkasida yangi fayl yarating
-2. `IToolService` interfeys'ini implement qiling
-3. `ToolRegistry`'da ro'yxatga qo'shing
+1. Create a new file in `src/agents/tools/implementations/`  
+2. Implement the `IToolService` interface  
+3. Register it in `ToolRegistry`  
 
-Misol:
+Example:
 
 ```typescript
 import { tool } from "@langchain/core/tools";
@@ -193,13 +194,13 @@ import type { IToolService } from "../base/tool.interface.js";
 
 export class MyCustomToolService implements IToolService {
   readonly name = "my_custom_tool";
-  readonly description = "Mening maxsus tool'im";
+  readonly description = "My custom tool";
 
   createTool() {
     return tool(
       async (input: { param: string }): Promise<string> => {
-        // Tool logikasi
-        return `Natija: ${input.param}`;
+        // Tool logic
+        return `Result: ${input.param}`;
       },
       {
         name: this.name,
@@ -213,47 +214,47 @@ export class MyCustomToolService implements IToolService {
 }
 ```
 
-## 🐛 Debug va Monitoring
+## 🐛 Debugging & Monitoring
 
-### Log'lar
+### Logs
 
-Loyiha console log'lar orqali debug ma'lumotlarini beradi:
+The project provides debug information via console logs:
 
-- 🚀 Server holati
-- 🤖 Agent so'rovlari
-- 🔧 Tool'lar faoliyati
-- 📊 Token statistikasi
-- ❌ Xatolar
+- 🚀 Server status  
+- 🤖 Agent requests  
+- 🔧 Tool activity  
+- 📊 Token statistics  
+- ❌ Errors  
 
 ### Environment Variables
 
-Debug uchun qo'shimcha sozlamalar:
+Extra debugging options:
 
 ```env
-AGENT_VERBOSE=true          # Agent debug log'lari
-NODE_ENV=development        # Development rejimi
+AGENT_VERBOSE=true          # Agent debug logs
+NODE_ENV=development        # Development mode
 ```
 
-## 🤝 Hissa Qo'shish
+## 🤝 Contributing
 
-1. Fork qiling
-2. Feature branch yarating (`git checkout -b feature/yangi-xususiyat`)
-3. O'zgarishlarni commit qiling (`git commit -am 'Yangi xususiyat qo'shildi'`)
-4. Branch'ni push qiling (`git push origin feature/yangi-xususiyat`)
-5. Pull Request yarating
+1. Fork the repository  
+2. Create a feature branch (`git checkout -b feature/new-feature`)  
+3. Commit your changes (`git commit -am 'Added new feature'`)  
+4. Push the branch (`git push origin feature/new-feature`)  
+5. Open a Pull Request  
 
-## 📄 Litsenziya
+## 📄 License
 
-Bu loyiha MIT litsenziyasi ostida tarqatiladi.
+This project is distributed under the MIT License.
 
-## 🆘 Yordam
+## 🆘 Help
 
-Agar savollaringiz bo'lsa yoki yordam kerak bo'lsa:
+If you have questions or need help:
 
-1. GitHub Issues orqali muammo yarating
-2. Hujjatlarni diqqat bilan o'qing
-3. Log'larni tekshiring
+1. Create an issue on GitHub  
+2. Carefully read the documentation  
+3. Check the logs  
 
 ---
 
-**Muvaffaqiyatli kodlash! 🎉**
+**Happy coding! 🎉**
